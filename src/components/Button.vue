@@ -7,24 +7,24 @@
 </template>
 
 <script lang="ts">
-  import { Options, Vue } from "vue-class-component";
+  import { defineComponent } from "vue";
 
-  @Options({
+  export default defineComponent({
     components: {},
     props: {
       text: String,
       color: String,
     },
     emits: ["btn-click"],
-  })
-  export default class Button extends Vue {
-    text!: string;
-    color!: string;
 
-    onClick(): void {
-      this.$emit("btn-click");
-    }
-  }
+    setup(props, { emit }) {
+      const onClick = (): void => {
+        emit("btn-click");
+      };
+
+      return { onClick };
+    },
+  });
 </script>
 
 <style scoped>

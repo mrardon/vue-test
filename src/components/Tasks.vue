@@ -11,12 +11,12 @@
 </template>
 
 <script lang="ts">
-  import { Options, Vue } from "vue-class-component";
+  import { defineComponent } from "vue";
   import { Task } from "@/models/task";
   import { PropType } from "@vue/runtime-core";
   import TaskRow from "./TaskRow.vue";
 
-  @Options({
+  export default defineComponent({
     components: {
       TaskRow,
     },
@@ -24,8 +24,5 @@
       tasks: Object as PropType<Task[]>,
     },
     emits: ["delete-task", "toggle-reminder"],
-  })
-  export default class Tasks extends Vue {
-    tasks: Task[] = [];
-  }
+  });
 </script>

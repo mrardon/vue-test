@@ -11,10 +11,11 @@
 </template>
 
 <script lang="ts">
-  import { Options, Vue } from "vue-class-component";
+  import { defineComponent, computed } from "vue";
+  import { useRoute } from "vue-router";
   import Button from "./Button.vue";
 
-  @Options({
+  export default defineComponent({
     components: {
       Button,
     },
@@ -23,19 +24,14 @@
       showAddTask: Boolean,
     },
     emits: ["toggle-add-task"],
-  })
-  export default class Header extends Vue {
-    title!: string;
-    showAddTask!: boolean;
+    setup() {
+      const route = useRoute();
 
-    get homePage() {
-      if (this.$route.path === "/") {
-        return true;
-      }
+      const homePage = computed(() => route.path === "/");
 
-      return false;
-    }
-  }
+      return { homePage };
+    },
+  });
 </script>
 
 <style scoped>

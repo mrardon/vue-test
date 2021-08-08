@@ -16,5 +16,15 @@ module.exports = {
   rules: {
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
+    "prettier/prettier": [
+      "error",
+      {
+        // Override all options of `prettier` here
+        // @see https://prettier.io/docs/en/options.html
+        tabWidth: 2,
+        useTabs: false,
+        vueIndentScriptAndStyle: true,
+      },
+    ],
   },
 };

@@ -23,33 +23,36 @@
 </template>
 
 <script lang="ts">
-  import { Options, Vue } from "vue-class-component";
+  import { defineComponent, ref } from "vue";
   import { Task } from "@/models/task";
 
-  @Options({
+  export default defineComponent({
     components: {},
     props: {},
     emits: ["add-task"],
-  })
-  export default class AddTask extends Vue {
-    text = "";
-    day = "";
-    reminder = false;
 
-    onSubmit() {
-      const newTask: Task = {
-        text: this.text,
-        day: this.day,
-        reminder: this.reminder,
+    setup(_props, { emit }) {
+      let text = ref("");
+      let day = ref("");
+      let reminder = ref(false);
+
+      const onSubmit = () => {
+        const newTask: Task = {
+          text: text.value,
+          day: day.value,
+          reminder: reminder.value,
+        };
+
+        emit("add-task", newTask);
+
+        text.value = "";
+        day.value = "";
+        reminder.value = false;
       };
 
-      this.$emit("add-task", newTask);
-
-      this.text = "";
-      this.day = "";
-      this.reminder = false;
-    }
-  }
+      return { text, day, reminder, onSubmit };
+    },
+  });
 </script>
 
 <style scoped>

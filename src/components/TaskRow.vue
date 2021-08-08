@@ -12,26 +12,21 @@
 </template>
 
 <script lang="ts">
-  import { Options, Vue } from "vue-class-component";
+  import { defineComponent } from "vue";
   import { Task } from "@/models/task";
   import { PropType } from "@vue/runtime-core";
 
-  @Options({
+  export default defineComponent({
     components: {},
     props: {
-      task: Object as PropType<Task>,
+      task: {
+        type: Object as PropType<Task>,
+        required: true,
+      },
     },
 
     emits: ["delete-task", "toggle-reminder"],
-  })
-  export default class TaskRow extends Vue {
-    task: Task = {
-      id: 0,
-      text: "Not Set",
-      day: "Never",
-      reminder: false,
-    } as Task;
-  }
+  });
 </script>
 
 <style scoped>

@@ -11,23 +11,26 @@
 </template>
 
 <script lang="ts">
-  import { Options, Vue } from "vue-class-component";
+  import { defineComponent, ref } from "vue";
   import Header from "./components/Header.vue";
   import Footer from "./components/Footer.vue";
 
-  @Options({
+  export default defineComponent({
     components: {
       Header,
       Footer,
     },
-  })
-  export default class App extends Vue {
-    showAddTask = false;
 
-    toggleAddTask() {
-      this.showAddTask = !this.showAddTask;
-    }
-  }
+    setup() {
+      let showAddTask = ref(false);
+
+      const toggleAddTask = (): void => {
+        showAddTask.value = !showAddTask.value;
+      };
+
+      return { showAddTask, toggleAddTask };
+    },
+  });
 </script>
 
 <style>
