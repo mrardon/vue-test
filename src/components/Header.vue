@@ -10,28 +10,23 @@
   </header>
 </template>
 
-<script lang="ts">
-  import { defineComponent, computed } from "vue";
+<script setup lang="ts">
+  import { computed, defineProps, defineEmits } from "vue";
   import { useRoute } from "vue-router";
   import Button from "./Button.vue";
 
-  export default defineComponent({
-    components: {
-      Button,
-    },
-    props: {
-      title: String,
-      showAddTask: Boolean,
-    },
-    emits: ["toggle-add-task"],
-    setup() {
-      const route = useRoute();
+  defineProps<{
+    title: string;
+    showAddTask: boolean;
+  }>();
 
-      const homePage = computed(() => route.path === "/");
+  defineEmits<{
+    (e: "toggle-add-task"): void;
+  }>();
 
-      return { homePage };
-    },
-  });
+  const route = useRoute();
+
+  const homePage = computed(() => route.path === "/");
 </script>
 
 <style scoped>

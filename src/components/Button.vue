@@ -6,25 +6,21 @@
   </header>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from "vue";
+<script setup lang="ts">
+  import { defineEmits, defineProps } from "vue";
 
-  export default defineComponent({
-    components: {},
-    props: {
-      text: String,
-      color: String,
-    },
-    emits: ["btn-click"],
+  defineProps<{
+    text: string;
+    color: string;
+  }>();
 
-    setup(props, { emit }) {
-      const onClick = (): void => {
-        emit("btn-click");
-      };
+  const emit = defineEmits<{
+    (e: "btn-click"): void;
+  }>();
 
-      return { onClick };
-    },
-  });
+  const onClick = (): void => {
+    emit("btn-click");
+  };
 </script>
 
 <style scoped>

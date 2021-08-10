@@ -10,99 +10,90 @@
   </div>
 </template>
 
-<script lang="ts">
-  import { defineComponent, ref } from "vue";
+<script setup lang="ts">
+  import { ref, defineProps } from "vue";
   import Tasks from "@/components/Tasks.vue";
   import AddTask from "@/components/AddTask.vue";
   import { Task } from "@/models/task";
 
-  export default defineComponent({
-    components: {
-      Tasks,
-      AddTask,
-    },
+  defineProps<{
+    showAddTask: boolean;
+  }>();
 
-    props: {
-      showAddTask: Boolean,
-    },
+  const tasks = ref<Task[]>([]);
 
-    setup() {
-      const tasks = ref<Task[]>([]);
+  const fetchTasks = async (): Promise<void> => {
+    await fetch("api/tasks")
+      .then((response) => {
+        return response.json();
+      })
+      .then((json) => {
+        tasks.value = json;
+      });
+  };
 
-      const fetchTasks = async (): Promise<void> => {
-        await fetch("api/tasks")
-          .then((response) => {
-            return response.json();
-          })
-          .then((json) => {
-            tasks.value = json;
-          });
-      };
+  const addTask = async (newTask: Task) => {
+    //remove the stub new task id
+    newTask.id = "";
+    await fetch("api/tasks", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(newTask),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        tasks.value = [...tasks.value, data];
+      });
+  };
 
-      const addTask = async (newTask: Task) => {
-        await fetch("api/tasks", {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify(newTask),
+  const deleteTask = async (id: string) => {
+    if (confirm("Are you sure?")) {
+      await fetch(`api/tasks/${id}`, {
+        method: "DELETE",
+      })
+        .then(() => {
+          tasks.value = tasks.value.filter((task) => task.id !== id);
         })
-          .then((response) => {
-            return response.json();
-          })
-          .then((data) => {
-            tasks.value = [...tasks.value, data];
-          });
-      };
-
-      const deleteTask = async (id: number) => {
-        if (confirm("Are you sure?")) {
-          await fetch(`api/tasks/${id}`, {
-            method: "DELETE",
-          })
-            .then(() => {
-              tasks.value = tasks.value.filter((task) => task.id !== id);
-            })
-            .catch((error) => {
-              alert(`Error deleting task: ${error}`);
-            });
-        }
-      };
-
-      const fetchTask = async (id: number): Promise<Task> => {
-        return await fetch(`api/tasks/${id}`).then((response) => {
-          return response.json();
+        .catch((error) => {
+          alert(`Error deleting task: ${error}`);
         });
-      };
+    }
+  };
 
-      const toggleReminder = async (id: number) => {
-        const taskToToggle = await fetchTask(id);
-        const updateTask = {
-          ...taskToToggle,
-          reminder: !taskToToggle.reminder,
-        };
+  const fetchTask = async (id: string): Promise<Task> => {
+    return await fetch(`api/tasks/${id}`).then((response) => {
+      return response.json();
+    });
+  };
 
-        await fetch(`api/tasks/${id}`, {
-          method: "PUT",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify(updateTask),
-        })
-          .then((response) => {
-            return response.json();
-          })
-          .then((data) => {
-            tasks.value = tasks.value.map((task) =>
-              task.id === id ? { ...task, reminder: data.reminder } : task
-            );
-          });
-      };
+  const toggleReminder = async (id: string) => {
+    const taskToToggle = await fetchTask(id);
+    const updateTask = {
+      ...taskToToggle,
+      reminder: !taskToToggle.reminder,
+    };
 
-      // init the tasks
-      fetchTasks();
+    await fetch(`api/tasks/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(updateTask),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        tasks.value = tasks.value.map((task) =>
+          task.id === id ? { ...task, reminder: data.reminder } : task
+        );
+      });
+  };
 
-      return { tasks, deleteTask, addTask, toggleReminder };
-    },
-  });
+  // init the tasks
+  fetchTasks();
 </script>

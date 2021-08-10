@@ -3,8 +3,10 @@
   <router-link to="/">Go Back</router-link>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from "vue";
+<script setup lang="ts">
+  import { defineProps } from "vue";
 
-  export default defineComponent({});
+  defineProps<{
+    showAddTask: boolean;
+  }>();
 </script>

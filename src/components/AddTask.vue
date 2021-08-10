@@ -22,37 +22,32 @@
   </form>
 </template>
 
-<script lang="ts">
-  import { defineComponent, ref } from "vue";
+<script setup lang="ts">
+  import { ref, defineEmits } from "vue";
   import { Task } from "@/models/task";
 
-  export default defineComponent({
-    components: {},
-    props: {},
-    emits: ["add-task"],
+  const emit = defineEmits<{
+    (e: "add-task", newTask: Task): void;
+  }>();
 
-    setup(_props, { emit }) {
-      let text = ref("");
-      let day = ref("");
-      let reminder = ref(false);
+  let text = ref("");
+  let day = ref("");
+  let reminder = ref<string>(false as any as string);
 
-      const onSubmit = () => {
-        const newTask: Task = {
-          text: text.value,
-          day: day.value,
-          reminder: reminder.value,
-        };
+  const onSubmit = () => {
+    const newTask: Task = {
+      id: "new_task",
+      text: text.value,
+      day: day.value,
+      reminder: reminder.value as unknown as boolean,
+    };
 
-        emit("add-task", newTask);
+    emit("add-task", newTask);
 
-        text.value = "";
-        day.value = "";
-        reminder.value = false;
-      };
-
-      return { text, day, reminder, onSubmit };
-    },
-  });
+    text.value = "";
+    day.value = "";
+    reminder.value = false as any as string;
+  };
 </script>
 
 <style scoped>
